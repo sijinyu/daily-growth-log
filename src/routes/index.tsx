@@ -1,6 +1,8 @@
 import { createBrowserRouter } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import AppLayout from '@/components/layout/AppLayout'
+import { AuthGuard } from '@/components/auth/AuthGuard'
+import type { RouteObject } from 'react-router-dom'
 
 const HomePage = lazy(() => import('@/pages/HomePage'))
 const WritePage = lazy(() => import('@/pages/WritePage'))
@@ -8,6 +10,7 @@ const ProfilePage = lazy(() => import('@/pages/ProfilePage'))
 const LeaderboardPage = lazy(() => import('@/pages/LeaderboardPage'))
 const OnboardingPage = lazy(() => import('@/pages/OnboardingPage'))
 const SettingsPage = lazy(() => import('@/pages/SettingsPage'))
+const NicknamePage = lazy(() => import('@/pages/NicknamePage'))
 
 function SuspenseWrapper({ children }: { children: React.ReactNode }) {
   return (
@@ -23,10 +26,14 @@ function SuspenseWrapper({ children }: { children: React.ReactNode }) {
   )
 }
 
-export const router = createBrowserRouter([
+export const routeConfig: RouteObject[] = [
   {
     path: '/',
-    element: <AppLayout />,
+    element: (
+      <AuthGuard>
+        <AppLayout />
+      </AuthGuard>
+    ),
     children: [
       {
         index: true,
@@ -78,4 +85,30 @@ export const router = createBrowserRouter([
       </SuspenseWrapper>
     ),
   },
-])
+  {
+    path: '/onboarding/nickname',
+    element: (
+      <SuspenseWrapper>
+        <NicknamePage />
+      </SuspenseWrapper>
+    ),
+  },
+  {
+    path: '/auth/callback',
+    element: (
+      <SuspenseWrapper>
+        <AuthCallbackHandler />
+      </SuspenseWrapper>
+    ),
+  },
+]
+
+function AuthCallbackHandler() {
+  return (
+    <div className="flex min-h-dvh items-center justify-center">
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+    </div>
+  )
+}
+
+export const router = createBrowserRouter(routeConfig)

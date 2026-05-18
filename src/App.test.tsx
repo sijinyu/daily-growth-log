@@ -1,17 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { render, screen } from '@testing-library/react'
-import { MemoryRouter } from 'react-router-dom'
-import { QueryClientProvider } from '@tanstack/react-query'
-import { queryClient } from '@/lib/queryClient'
+import { renderWithProviders } from '@/test/helpers/renderWithProviders'
+import { screen } from '@testing-library/react'
 import HomePage from '@/pages/HomePage'
-
-function renderWithProviders(ui: React.ReactElement) {
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <MemoryRouter>{ui}</MemoryRouter>
-    </QueryClientProvider>,
-  )
-}
 
 describe('HomePage', () => {
   it('renders the app title', () => {
